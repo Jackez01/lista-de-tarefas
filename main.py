@@ -45,8 +45,12 @@ def deletar_tarefa(id: int, db: Session = Depends(get_db)):
 
 # Rota Update
 @app.put('/tarefas/{id}')
-def alterar_tarefas(id: int, db: Session = Depends(get_db)):
+def alterar_tarefas(id: int, tarefa: schemas.TarefaCreate, db: Session = Depends(get_db)):
    alterar = db.query(models.Tarefa).filter(models.Tarefa.id == id).first()
-   alterar.titulo = titulo
-   alterar.descricao = descricao
-   alterar.status = status
+   alterar.titulo = tarefa.titulo
+   alterar.descricao = tarefa.descricao
+   alterar.status = tarefa.status
+
+   db.commit()
+   db.refresh(alterar)
+   return alterar
